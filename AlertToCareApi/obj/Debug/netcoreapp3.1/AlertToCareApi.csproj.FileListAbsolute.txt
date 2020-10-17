@@ -18,7 +18,6 @@ C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\AlertToCareApi\obj\Debug\n
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.dll
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.pdb
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.genruntimeconfig.cache
-C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csprojAssemblyReference.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.AssemblyInfoInputs.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.AssemblyInfo.cs
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\bin\Debug\netcoreapp3.1\appsettings.Development.json
@@ -76,5 +75,6 @@ C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\st
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.dll
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.pdb
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.genruntimeconfig.cache
+C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csproj.CoreCompileInputs.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.MvcApplicationPartsAssemblyInfo.cache

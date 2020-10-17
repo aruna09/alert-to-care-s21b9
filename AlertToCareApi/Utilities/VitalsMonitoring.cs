@@ -1,22 +1,20 @@
 ﻿using AlertToCareApi.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlertToCareApi.Utilities
 {
     public class VitalsMonitoring
     {
-        readonly List<PatientVitals> patientVitals = new List<PatientVitals>
-        {
-            new PatientVitals{ VitalsInfoId = 1, PatientId = 1, BpmRate = 23, RespRate = 60, Spo2Rate = 90},
-            new PatientVitals{ VitalsInfoId = 2, PatientId = 3, BpmRate = 78, RespRate = 120, Spo2Rate = 56}
-        };
+        readonly ConfigDbContext _context = new ConfigDbContext();
         public IEnumerable<PatientVitals> GetAllVitals()
         {
-            return patientVitals;
+            return _context.PatientVital.ToList();
         }
         public PatientVitals GetVitalsForSpecificPatient(int id)
         {
-            foreach(PatientVitals vitals in patientVitals)
+            var vitalStore = _context.PatientVital.ToList();
+            foreach(PatientVitals vitals in vitalStore)
             {
                 if(vitals.PatientId == id)
                 {

@@ -2,7 +2,7 @@
 
 namespace AlertToCareApi.Models
 {
-    public class ICURooms
+    public class IcuRooms
     {
         [Key]
         public int IcuRoomNo { get; set; }
