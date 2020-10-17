@@ -18,6 +18,8 @@ namespace AlertToCareApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var client = new ConfigDbContext();
+            client.Database.EnsureCreated();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,6 +28,7 @@ namespace AlertToCareApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddEntityFrameworkSqlite().AddDbContext<ConfigDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
