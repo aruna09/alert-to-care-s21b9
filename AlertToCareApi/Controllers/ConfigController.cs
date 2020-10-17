@@ -1,12 +1,8 @@
-﻿using System;
+﻿using AlertToCareApi.Models;
+using AlertToCareApi.Utilities;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using AlertToCareApi.Models;
-using AlertToCareApi.Utilities;
-using System.Threading;
 
 namespace AlertToCareApi.Controllers
 {
@@ -14,15 +10,15 @@ namespace AlertToCareApi.Controllers
     [ApiController]
     public class ConfigController : ControllerBase
     {
-        static List<Layouts> layouts = new List<Layouts>
+        readonly static List<Layouts> layouts = new List<Layouts>
         {
-            new Layouts{ layoutId = 1 , capacityLevel = "VERY HIGH", layoutType = "CLUSTER"},
-            new Layouts{ layoutId = 2 , capacityLevel = "HIGH" , layoutType = "TRIANGULAR" },
-            new Layouts{ layoutId = 3 , capacityLevel = "LOW" , layoutType = "U-SHAPED" },
-            new Layouts{ layoutId = 4 , capacityLevel = "VERY LOW" , layoutType = "RADIAL" }
+            new Layouts{ LayoutId = 1 , CapacityLevel = "VERY HIGH", LayoutType = "CLUSTER"},
+            new Layouts{ LayoutId = 2 , CapacityLevel = "HIGH" , LayoutType = "TRIANGULAR" },
+            new Layouts{ LayoutId = 3 , CapacityLevel = "LOW" , LayoutType = "U-SHAPED" },
+            new Layouts{ LayoutId = 4 , CapacityLevel = "VERY LOW" , LayoutType = "RADIAL" }
         };
 
-        ConfigDbContext _context = new ConfigDbContext();
+        readonly ConfigDbContext _context = new ConfigDbContext();
 
         //Number of beds in each ICU
         [HttpGet("Beds")]
@@ -31,12 +27,12 @@ namespace AlertToCareApi.Controllers
             var bedStore = _context.Beds.ToList();
             var icuStore = _context.ICURoom.ToList();
             var bedsInEachIcu = from bed in bedStore
-                        group bed by bed.icuRoomNo into bd
-                        join icu in icuStore on bd.FirstOrDefault().icuRoomNo equals icu.icuRoomNo
+                        group bed by bed.IcuRoomNo into bd
+                        join icu in icuStore on bd.FirstOrDefault().IcuRoomNo equals icu.IcuRoomNo
                         select new NumberOfBedsInIcu
                         {
-                            IcuRoomNo = icu.icuRoomNo,
-                            CountOfBeds = bd.Count(m=>m.icuRoomNo==icu.icuRoomNo)
+                            IcuRoomNo = icu.IcuRoomNo,
+                            CountOfBeds = bd.Count(m=>m.IcuRoomNo==icu.IcuRoomNo)
                         };
 
             return bedsInEachIcu;
@@ -54,7 +50,7 @@ namespace AlertToCareApi.Controllers
                 if(bed.BedId == bedId)
                 {
                     bedIdentification.BedId = bed.BedId;
-                    bedIdentification.icuRoomNo = bed.icuRoomNo;
+                    bedIdentification.IcuRoomNo = bed.IcuRoomNo;
                     bedIdentification.OccupancyStatus = bed.OccupancyStatus;
                     bedIdentification.BedSerialNo = MapBedToLayout(bed.LayoutId);
                 }
@@ -64,7 +60,7 @@ namespace AlertToCareApi.Controllers
 
         public int MapBedToLayout(int layoutId)
         {
-            int bedSerialNo = 0;
+            int bedSerialNo = layoutId;
             /*switch (layoutId)
             {
                 case 1: bedSerialNo = 1;

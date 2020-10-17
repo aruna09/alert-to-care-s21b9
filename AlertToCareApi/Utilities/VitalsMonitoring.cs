@@ -1,17 +1,14 @@
 ﻿using AlertToCareApi.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AlertToCareApi
+namespace AlertToCareApi.Utilities
 {
     public class VitalsMonitoring
     {
-        List<PatientVitals> patientVitals = new List<PatientVitals>
+        readonly List<PatientVitals> patientVitals = new List<PatientVitals>
         {
-            new PatientVitals{ vitalsInfoId = 1, patientId = 1, bpmRate = 23, respRate = 60, spo2Rate = 90},
-            new PatientVitals{ vitalsInfoId = 2, patientId = 3, bpmRate = 78, respRate = 120, spo2Rate = 56}
+            new PatientVitals{ VitalsInfoId = 1, PatientId = 1, BpmRate = 23, RespRate = 60, Spo2Rate = 90},
+            new PatientVitals{ VitalsInfoId = 2, PatientId = 3, BpmRate = 78, RespRate = 120, Spo2Rate = 56}
         };
         public IEnumerable<PatientVitals> GetAllVitals()
         {
@@ -21,7 +18,7 @@ namespace AlertToCareApi
         {
             foreach(PatientVitals vitals in patientVitals)
             {
-                if(vitals.patientId == id)
+                if(vitals.PatientId == id)
                 {
                     return vitals;
                 }
@@ -31,9 +28,9 @@ namespace AlertToCareApi
 
         public string CheckVitals(PatientVitals vital)
         {
-            var a = CheckSpo2(vital.spo2Rate);
-            var b = CheckBpm(vital.bpmRate);
-            var c = CheckRespRate(vital.respRate);
+            var a = CheckSpo2(vital.Spo2Rate);
+            var b = CheckBpm(vital.BpmRate);
+            var c = CheckRespRate(vital.RespRate);
             var s = a + "," + b + "," + c;
             return s;
         }

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using AlertToCareApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AlertToCareApi.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AlertToCareApi.Controllers
 {
@@ -12,7 +9,7 @@ namespace AlertToCareApi.Controllers
     [ApiController]
     public class OccupancyController : ControllerBase
     {
-        ConfigDbContext _context = new ConfigDbContext();
+        readonly ConfigDbContext _context = new ConfigDbContext();
 
         [HttpGet("AvailableBeds")]
         public IEnumerable<Beds> GetBedsAvaliability()
@@ -60,7 +57,7 @@ namespace AlertToCareApi.Controllers
             var patientStore = _context.Patient.ToList();
             foreach (Patients patient in patientStore)
             {
-                if (patient.patientId == patientId)
+                if (patient.PatientId == patientId)
                 {
                     return patient;
                 }
@@ -84,7 +81,7 @@ namespace AlertToCareApi.Controllers
             var patientStore = _context.Patient.ToList();
             foreach (Patients patient in patientStore)
             {
-                if (patient.patientId == patientId)
+                if (patient.PatientId == patientId)
                 {
                     _context.Update(updatedPatient);
                     _context.SaveChanges();
@@ -99,7 +96,7 @@ namespace AlertToCareApi.Controllers
             var patientStore = _context.Patient.ToList();
             foreach (Patients patient in patientStore)
             {
-                if (patient.patientId == patientId)
+                if (patient.PatientId == patientId)
                 {
                     _context.Remove(patient);
                     _context.SaveChanges();
@@ -113,7 +110,7 @@ namespace AlertToCareApi.Controllers
             var bedStore = _context.Beds.ToList();
             foreach(Beds bed in bedStore) 
             {
-                if (patient.bedId == bed.BedId)
+                if (patient.BedId == bed.BedId)
                 {
                     UpdateBedOccupancyStatus(bed);
                 }

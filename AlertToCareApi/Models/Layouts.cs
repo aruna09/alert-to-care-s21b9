@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AlertToCareApi.Models
+﻿namespace AlertToCareApi.Models
 {
     public class Layouts
     {
-        public int layoutId { get; set; }
-        public string capacityLevel { get; set; }
-        public string layoutType { get; set; }
+        public int LayoutId { get; set; }
+        public string CapacityLevel { get; set; }
+        public string LayoutType { get; set; }
     }
 }

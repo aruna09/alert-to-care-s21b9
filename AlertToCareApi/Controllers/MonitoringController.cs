@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using AlertToCareApi.Models;
-using Microsoft.AspNetCore.Http;
+﻿using AlertToCareApi.Models;
+using AlertToCareApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace AlertToCareApi.Controllers
 {
@@ -13,7 +9,6 @@ namespace AlertToCareApi.Controllers
     [ApiController]
     public class MonitoringController : ControllerBase
     {
-        List<string> alarmMessages = new List<string>();
 
         //with regrad to vitals
         [HttpGet("HealthStatus")]
