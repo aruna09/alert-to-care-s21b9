@@ -65,7 +65,7 @@ namespace AlertToCareApi.Controllers
         public int MapBedToLayout(int layoutId)
         {
             int bedSerialNo = 0;
-            switch (layoutId)
+            /*switch (layoutId)
             {
                 case 1: bedSerialNo = 1;
                     break;
@@ -77,7 +77,7 @@ namespace AlertToCareApi.Controllers
                     break;
                 default: bedSerialNo = 0;
                     break;
-            }
+            }*/
             return bedSerialNo;
         }
 
