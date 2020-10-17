@@ -49,8 +49,6 @@ C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\bin\Debug\netcoreapp3.1\ru
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.AssemblyInfoInputs.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.AssemblyInfo.cs
-C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csproj.CoreCompileInputs.cache
-C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.RazorTargetAssemblyInfo.cache
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csproj.CopyComplete
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\staticwebassets\AlertToCareApi.StaticWebAssets.Manifest.cache
@@ -58,3 +56,6 @@ C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\st
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.dll
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.pdb
 C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.genruntimeconfig.cache
+C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csprojAssemblyReference.cache
+C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.csproj.CoreCompileInputs.cache
+C:\Users\320087363\alert-to-care-s21b9\AlertToCareApi\obj\Debug\netcoreapp3.1\AlertToCareApi.MvcApplicationPartsAssemblyInfo.cache
