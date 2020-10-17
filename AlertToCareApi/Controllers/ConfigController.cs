@@ -10,7 +10,7 @@ namespace AlertToCareApi.Controllers
     [ApiController]
     public class ConfigController : ControllerBase
     {
-        readonly static List<Layouts> layouts = new List<Layouts>
+        static readonly List<Layouts> Layouts = new List<Layouts>
         {
             new Layouts{ LayoutId = 1 , CapacityLevel = "VERY HIGH", LayoutType = "CLUSTER"},
             new Layouts{ LayoutId = 2 , CapacityLevel = "HIGH" , LayoutType = "TRIANGULAR" },
@@ -22,10 +22,10 @@ namespace AlertToCareApi.Controllers
 
         //Number of beds in each ICU
         [HttpGet("Beds")]
-        public IEnumerable<NumberOfBedsInIcu> GetNumberOfBedsInEachICU()
+        public IEnumerable<NumberOfBedsInIcu> GetNumberOfBedsInEachIcu()
         {
             var bedStore = _context.Beds.ToList();
-            var icuStore = _context.ICURoom.ToList();
+            var icuStore = _context.IcuRoom.ToList();
             var bedsInEachIcu = from bed in bedStore
                         group bed by bed.IcuRoomNo into bd
                         join icu in icuStore on bd.FirstOrDefault().IcuRoomNo equals icu.IcuRoomNo
@@ -82,7 +82,7 @@ namespace AlertToCareApi.Controllers
         [HttpGet("Layouts")]
         public IEnumerable<Layouts> GetLayoutInfo()
         {
-            return layouts;
+            return Layouts;
         }
 
         [HttpPost("Beds")]

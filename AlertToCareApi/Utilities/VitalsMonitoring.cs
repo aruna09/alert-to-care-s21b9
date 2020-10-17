@@ -34,7 +34,7 @@ namespace AlertToCareApi.Utilities
             var s = a + "," + b + "," + c;
             return s;
         }
-        public string CheckSpo2(double spo2)
+        private string CheckSpo2(double spo2)
         {
             if (spo2 < 90)
             {
@@ -46,7 +46,7 @@ namespace AlertToCareApi.Utilities
                 return "";
 
         }
-        public string CheckBpm(double bpm)
+        private string CheckBpm(double bpm)
         {
             if (bpm < 70)
                 return "bpm is low ";
@@ -55,7 +55,7 @@ namespace AlertToCareApi.Utilities
             else
                 return "";
         }
-        public string CheckRespRate(double respRate)
+        private string CheckRespRate(double respRate)
         {
             if (respRate < 30)
                 return "respRate is low ";

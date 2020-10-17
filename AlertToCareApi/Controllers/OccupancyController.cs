@@ -18,7 +18,7 @@ namespace AlertToCareApi.Controllers
             var bedStore = _context.Beds.ToList();
             foreach(Beds bed in bedStore)
             {
-                if(bed.OccupancyStatus == true)
+                if(bed.OccupancyStatus)
                 {
                     avaliableBeds.Add(bed);
                 }
