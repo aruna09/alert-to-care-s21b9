@@ -14,7 +14,7 @@ namespace AlertToCareApi.Models
         public int icuRoomNo{ get; set; }
         [ForeignKey("IcuRoomNo")]
         public bool OccupancyStatus { get; set; }
-        public string LayoutId { get; set; }
+        public int LayoutId { get; set; }
 
     }
 }

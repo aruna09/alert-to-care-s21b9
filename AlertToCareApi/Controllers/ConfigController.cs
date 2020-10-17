@@ -45,18 +45,40 @@ namespace AlertToCareApi.Controllers
         //Bed Identification
         //TODO: Add the info about bed serial no by mapping it with the layout
         [HttpGet("Beds/{BedId}")]
-        public Beds GetParticularBedInfo(int bedId)
+        public BedIdentification GetParticularBedInfo(int bedId)
         {
-            Beds bedFromId = new Beds();
+            BedIdentification bedIdentification = new BedIdentification();
             var bedStore = _context.Beds.ToList();
             foreach(Beds bed in bedStore)
             {
                 if(bed.BedId == bedId)
                 {
-                    bedFromId = bed;
+                    bedIdentification.BedId = bed.BedId;
+                    bedIdentification.icuRoomNo = bed.icuRoomNo;
+                    bedIdentification.OccupancyStatus = bed.OccupancyStatus;
+                    bedIdentification.BedSerialNo = MapBedToLayout(bed.LayoutId);
                 }
             }
-            return bedFromId;
+            return bedIdentification;
+        }
+
+        public int MapBedToLayout(int layoutId)
+        {
+            int bedSerialNo = 0;
+            switch (layoutId)
+            {
+                case 1: bedSerialNo = 1;
+                    break;
+                case 2: bedSerialNo = 2;
+                    break;
+                case 3: bedSerialNo = 3;
+                    break;
+                case 4: bedSerialNo = 4;
+                    break;
+                default: bedSerialNo = 0;
+                    break;
+            }
+            return bedSerialNo;
         }
 
         //Layout Information
