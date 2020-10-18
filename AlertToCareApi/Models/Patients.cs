@@ -10,7 +10,7 @@ namespace AlertToCareApi.Models
         public string PatientName { get; set; }
         public int PatientAge { get; set; }
         public string ContactNo { get; set; }
-        [ForeignKey("bedId")]
+        [ForeignKey("BedId")]
         public int BedId { get; set; }
     }
 }

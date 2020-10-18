@@ -46,15 +46,15 @@ namespace AlertToCareApi.Controllers
         [HttpGet("PatientInfo")]
         public IEnumerable<Patients> Get()
         {
-            var patientStore = _context.Patient.ToList();
+            var patientStore = _context.Patients.ToList();
             return patientStore;
         }
 
-        // Particular Layout Info 
+        //Particular Patient Info 
         [HttpGet("PatientInfo/{patientId}")]
         public Patients Get(int patientId)
         {
-            var patientStore = _context.Patient.ToList();
+            var patientStore = _context.Patients.ToList();
             foreach (Patients patient in patientStore)
             {
                 if (patient.PatientId == patientId)
@@ -69,7 +69,7 @@ namespace AlertToCareApi.Controllers
         [HttpPost("PatientInfo")]
         public void Post([FromBody] Patients patient)
         {
-            _context.Patient.Add(patient);
+            _context.Patients.Add(patient);
             _context.SaveChanges();
             AllotBedToPatient(patient);
         }
@@ -78,7 +78,7 @@ namespace AlertToCareApi.Controllers
         [HttpPut("PatientInfo/{patientId}")]
         public void Put(int patientId, [FromBody] Patients updatedPatient)
         {
-            var patientStore = _context.Patient.ToList();
+            var patientStore = _context.Patients.ToList();
             foreach (Patients patient in patientStore)
             {
                 if (patient.PatientId == patientId)
@@ -93,7 +93,7 @@ namespace AlertToCareApi.Controllers
         [HttpDelete("PatientInfo/{patientId}")]
         public void DeleteLayout(int patientId)
         {
-            var patientStore = _context.Patient.ToList();
+            var patientStore = _context.Patients.ToList();
             foreach (Patients patient in patientStore)
             {
                 if (patient.PatientId == patientId)

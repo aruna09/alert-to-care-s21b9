@@ -7,13 +7,12 @@ namespace AlertToCareApi
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=PatientDatabase.db");
+            optionsBuilder.UseSqlite("Filename=CaseStudy2Database.db");
         }
-        public DbSet<IcuRooms> IcuRoom { get; set; }
+        public DbSet<Icu> Icu { get; set; }
         public DbSet<Beds> Beds { get; set; }
-        public DbSet<Patients> Patient { get; set; }
-        public DbSet<PatientVitals> PatientVital { get; set; }
-
+        public DbSet<Patients> Patients { get; set; }
+        public DbSet<VitalsLogs> VitalsLogs { get; set; }
     }
     
 }

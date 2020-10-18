@@ -2,11 +2,11 @@
 
 namespace AlertToCareApi.Models
 {
-    public class IcuRooms
+    public class Icu
     {
         [Key]
-        public int IcuRoomNo { get; set; }
-        public string CapacityLevel { get; set; }
+        public int IcuNo { get; set; }
         public int FloorNo { get; set; }
+        public int LayoutId { get; set; }
     }
 }

@@ -10,85 +10,68 @@ namespace AlertToCareApi.Controllers
     [ApiController]
     public class ConfigController : ControllerBase
     {
-        static readonly List<Layouts> Layouts = new List<Layouts>
-        {
-            new Layouts{ LayoutId = 1 , CapacityLevel = "VERY HIGH", LayoutType = "CLUSTER"},
-            new Layouts{ LayoutId = 2 , CapacityLevel = "HIGH" , LayoutType = "TRIANGULAR" },
-            new Layouts{ LayoutId = 3 , CapacityLevel = "LOW" , LayoutType = "U-SHAPED" },
-            new Layouts{ LayoutId = 4 , CapacityLevel = "VERY LOW" , LayoutType = "RADIAL" }
-        };
-
         readonly ConfigDbContext _context = new ConfigDbContext();
+
+        #region MainFunctions
 
         //Number of beds in each ICU
         [HttpGet("Beds")]
         public IEnumerable<NumberOfBedsInIcu> GetNumberOfBedsInEachIcu()
-        {
-            var bedStore = _context.Beds.ToList();
-            var icuStore = _context.IcuRoom.ToList();
-            var bedsInEachIcu = from bed in bedStore
-                        group bed by bed.IcuRoomNo into bd
-                        join icu in icuStore on bd.FirstOrDefault().IcuRoomNo equals icu.IcuRoomNo
-                        select new NumberOfBedsInIcu
-                        {
-                            IcuRoomNo = icu.IcuRoomNo,
-                            CountOfBeds = bd.Count(m=>m.IcuRoomNo==icu.IcuRoomNo)
-                        };
-
-            return bedsInEachIcu;
+        { 
+            var icuStore = _context.Icu.ToList();
+            List<NumberOfBedsInIcu> numberOfBedsInIcu = new List<NumberOfBedsInIcu>();
+            BedIdentification bedIdentification = new BedIdentification();
+            foreach(Icu icu in icuStore)
+            {
+                numberOfBedsInIcu.Add(new NumberOfBedsInIcu { IcuRoomNo = icu.IcuNo, CountOfBeds = bedIdentification.FindCountOfBeds(icu.IcuNo) });
+            }
+            return numberOfBedsInIcu;
         }
 
         //Bed Identification
-        //TODO: Add the info about bed serial no by mapping it with the layout
         [HttpGet("Beds/{BedId}")]
-        public BedIdentification GetParticularBedInfo(int bedId)
+        public Beds GetParticularBedInfo(int bedId)
         {
-            BedIdentification bedIdentification = new BedIdentification();
             var bedStore = _context.Beds.ToList();
             foreach(Beds bed in bedStore)
             {
                 if(bed.BedId == bedId)
                 {
-                    bedIdentification.BedId = bed.BedId;
-                    bedIdentification.IcuRoomNo = bed.IcuRoomNo;
-                    bedIdentification.OccupancyStatus = bed.OccupancyStatus;
-                    bedIdentification.BedSerialNo = MapBedToLayout(bed.LayoutId);
+                    return bed;
                 }
             }
-            return bedIdentification;
-        }
-
-        public int MapBedToLayout(int layoutId)
-        {
-            int bedSerialNo = layoutId;
-            /*switch (layoutId)
-            {
-                case 1: bedSerialNo = 1;
-                    break;
-                case 2: bedSerialNo = 2;
-                    break;
-                case 3: bedSerialNo = 3;
-                    break;
-                case 4: bedSerialNo = 4;
-                    break;
-                default: bedSerialNo = 0;
-                    break;
-            }*/
-            return bedSerialNo;
+            return null;
         }
 
         //Layout Information
-        //TODO: Add the info about the number of beds and ICUs in each layout
         [HttpGet("Layouts")]
         public IEnumerable<Layouts> GetLayoutInfo()
         {
-            return Layouts;
+            LayoutInformation layoutInformation = new LayoutInformation();
+            var layoutStore = LayoutInformation.Layouts;
+            foreach(Layouts layout in layoutStore)
+            {
+                layout.NoOfIcus = layoutInformation.FindNoOfIcus(layout.LayoutId);
+            }
+            return layoutStore;
         }
 
+        #endregion
+
+        #region ManipulatingFunctions
         [HttpPost("Beds")]
         public void AddNewBed([FromBody] Beds bed)
         {
+            BedIdentification bedIdentification = new BedIdentification();
+            bed.BedSerialNo = bedIdentification.FindBedSerialNo(bed.IcuNo);
             _context.Add(bed);
+            _context.SaveChanges();
+        }
+
+        [HttpPost("Icu")]
+        public void AddNewIcu([FromBody] Icu icu)
+        {
+            _context.Add(icu);
             _context.SaveChanges();
         }
 
@@ -119,5 +102,6 @@ namespace AlertToCareApi.Controllers
                 }
             }
         }
+        #endregion
     }
 }

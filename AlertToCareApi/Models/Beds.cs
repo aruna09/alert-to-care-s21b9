@@ -7,10 +7,10 @@ namespace AlertToCareApi.Models
     {
         [Key]
         public int BedId { get; set; }
-        public int IcuRoomNo{ get; set; }
-        [ForeignKey("IcuRoomNo")]
+        public int IcuNo{ get; set; }
+        [ForeignKey("IcuNo")]
         public bool OccupancyStatus { get; set; }
-        public int LayoutId { get; set; }
+        public int BedSerialNo { get; set; }
 
     }
 }

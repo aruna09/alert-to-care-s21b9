@@ -16,8 +16,8 @@ namespace AlertToCareApi.Controllers
         {
             List<string> messages = new List<string>();
             VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-            IEnumerable<PatientVitals> patientVitals = vitalsMonitoring.GetAllVitals();
-            foreach(PatientVitals vitals in patientVitals)
+            IEnumerable<VitalsLogs> patientVitals = vitalsMonitoring.GetAllVitals();
+            foreach(VitalsLogs vitals in patientVitals)
             {
                messages.Add(vitalsMonitoring.CheckVitals(vitals));
             }
@@ -28,7 +28,7 @@ namespace AlertToCareApi.Controllers
         public string GetAlarmForParticularPatient(int patientId)
         {
             VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-            PatientVitals patientVitals = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
+            VitalsLogs patientVitals = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
             string alarmMessage = vitalsMonitoring.CheckVitals(patientVitals);
             return alarmMessage;
         }

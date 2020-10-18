@@ -7,14 +7,14 @@ namespace AlertToCareApi.Utilities
     public class VitalsMonitoring
     {
         readonly ConfigDbContext _context = new ConfigDbContext();
-        public IEnumerable<PatientVitals> GetAllVitals()
+        public IEnumerable<VitalsLogs> GetAllVitals()
         {
-            return _context.PatientVital.ToList();
+            return _context.VitalsLogs.ToList();
         }
-        public PatientVitals GetVitalsForSpecificPatient(int id)
+        public VitalsLogs GetVitalsForSpecificPatient(int id)
         {
-            var vitalStore = _context.PatientVital.ToList();
-            foreach(PatientVitals vitals in vitalStore)
+            var vitalStore = _context.VitalsLogs.ToList();
+            foreach(VitalsLogs vitals in vitalStore)
             {
                 if(vitals.PatientId == id)
                 {
@@ -24,7 +24,7 @@ namespace AlertToCareApi.Utilities
             return null;
         }
 
-        public string CheckVitals(PatientVitals vital)
+        public string CheckVitals(VitalsLogs vital)
         {
             var a = CheckSpo2(vital.Spo2Rate);
             var b = CheckBpm(vital.BpmRate);
