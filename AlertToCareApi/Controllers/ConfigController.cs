@@ -15,7 +15,7 @@ namespace AlertToCareApi.Controllers
         #region MainFunctions
 
         //Number of beds in each ICU
-        [HttpGet("Beds")]
+        [HttpGet("BedsInEachIcu")]
         public IEnumerable<NumberOfBedsInIcu> GetNumberOfBedsInEachIcu()
         { 
             var icuStore = _context.Icu.ToList();
@@ -33,14 +33,8 @@ namespace AlertToCareApi.Controllers
         public Beds GetParticularBedInfo(int bedId)
         {
             var bedStore = _context.Beds.ToList();
-            foreach(Beds bed in bedStore)
-            {
-                if(bed.BedId == bedId)
-                {
-                    return bed;
-                }
-            }
-            return null;
+            var bed = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
+            return bed;
         }
 
         //Layout Information
@@ -52,6 +46,7 @@ namespace AlertToCareApi.Controllers
             foreach(Layouts layout in layoutStore)
             {
                 layout.NoOfIcus = layoutInformation.FindNoOfIcus(layout.LayoutId);
+                layout.ListOfIcus = layoutInformation.FindListOfIcus(layout.LayoutId);
             }
             return layoutStore;
         }
@@ -59,6 +54,19 @@ namespace AlertToCareApi.Controllers
         #endregion
 
         #region ManipulatingFunctions
+
+        [HttpGet("Beds")]
+        public IEnumerable<Beds> GetAllBedsInfo()
+        {
+            return _context.Beds.ToList();
+        }
+
+        [HttpGet("Icu")]
+        public IEnumerable<Icu> GetAllIcuInfo()
+        {
+            return _context.Icu.ToList();
+        }
+
         [HttpPost("Beds")]
         public void AddNewBed([FromBody] Beds bed)
         {
@@ -89,6 +97,20 @@ namespace AlertToCareApi.Controllers
             }
         }
 
+        [HttpPut("Icu/{IcuNo}")]
+        public void UpdateParticularIcuInfo(int icuNo, [FromBody] Icu updatedIcu)
+        {
+            var icuStore = _context.Icu.ToList();
+            foreach (Icu icu in icuStore)
+            {
+                if (icu.IcuNo == icuNo)
+                {
+                    _context.Update(updatedIcu);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
         [HttpDelete("Beds/{BedId}")]
         public void DeleteParticularBedInfo(int bedId)
         {
@@ -98,6 +120,20 @@ namespace AlertToCareApi.Controllers
                 if (bed.BedId == bedId)
                 {
                     _context.Remove(bed);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        [HttpDelete("Icu/{IcuNo}")]
+        public void DeleteParticularIcuInfo(int icuNo)
+        {
+            var icuStore = _context.Icu.ToList();
+            foreach (Icu icu in icuStore)
+            {
+                if (icu.IcuNo == icuNo)
+                {
+                    _context.Remove(icu);
                     _context.SaveChanges();
                 }
             }

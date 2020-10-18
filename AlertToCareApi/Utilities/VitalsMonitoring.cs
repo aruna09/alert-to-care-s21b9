@@ -14,14 +14,8 @@ namespace AlertToCareApi.Utilities
         public VitalsLogs GetVitalsForSpecificPatient(int id)
         {
             var vitalStore = _context.VitalsLogs.ToList();
-            foreach(VitalsLogs vitals in vitalStore)
-            {
-                if(vitals.PatientId == id)
-                {
-                    return vitals;
-                }
-            }
-            return null;
+            var vitals = vitalStore.Where(item => item.PatientId == id).FirstOrDefault();
+            return vitals;
         }
 
         public string CheckVitals(VitalsLogs vital)

@@ -23,5 +23,12 @@ namespace AlertToCareApi.Utilities
             var icuInEachlayout = icuStore.Where(item => item.LayoutId == layoutId).Count();
             return icuInEachlayout;
         }
+
+        public List<Icu> FindListOfIcus(int layoutId)
+        {
+            var icuStore = _context.Icu.ToList();
+            var listOfIcuInEachlayout = icuStore.Where(item => item.LayoutId == layoutId).ToList();
+            return listOfIcuInEachlayout;
+        }
     }
 }

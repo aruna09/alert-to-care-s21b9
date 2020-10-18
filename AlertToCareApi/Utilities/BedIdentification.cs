@@ -11,29 +11,15 @@ namespace AlertToCareApi.Utilities
 
         public int FindLayoutIdForBed(int icuNo)
         {
-            int layoutId = 0;
             var icuStore = _context.Icu.ToList();
-            foreach(Icu icu in icuStore)
-            {
-                if(icu.IcuNo == icuNo)
-                {
-                    layoutId = icu.LayoutId;
-                }
-            }
+            var layoutId = icuStore.Where(item => item.IcuNo == icuNo).FirstOrDefault().LayoutId;
             return layoutId;
         }
         public int FindCapacityOfLayout(int icuNo)
         {
-            int capacity = 0;
             int layoutId = FindLayoutIdForBed(icuNo);
             var layoutStore = LayoutInformation.Layouts;
-            foreach (Layouts layouts in layoutStore)
-            {
-                if (layouts.LayoutId == layoutId)
-                {
-                    capacity = layouts.Capacity;
-                }
-            }
+            var capacity = layoutStore.Where(item => item.LayoutId == layoutId).FirstOrDefault().Capacity;
             return capacity;
         }
 

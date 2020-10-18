@@ -1,4 +1,6 @@
-﻿namespace AlertToCareApi.Models
+﻿using System.Collections.Generic;
+
+namespace AlertToCareApi.Models
 {
     public class Layouts
     {
@@ -6,5 +8,6 @@
         public string LayoutType { get; set; }
         public int Capacity { get; set; }
         public int NoOfIcus { get; set; }
+        public List<Icu> ListOfIcus { get; set; }
     }
 }

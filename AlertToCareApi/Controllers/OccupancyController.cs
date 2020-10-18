@@ -1,4 +1,5 @@
 ﻿using AlertToCareApi.Models;
+using AlertToCareApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,40 +12,66 @@ namespace AlertToCareApi.Controllers
     {
         readonly ConfigDbContext _context = new ConfigDbContext();
 
+        #region MainFunctions
+
         [HttpGet("AvailableBeds")]
         public IEnumerable<Beds> GetBedsAvaliability()
         {
-            List<Beds> avaliableBeds = new List<Beds>();
-            var bedStore = _context.Beds.ToList();
-            foreach(Beds bed in bedStore)
-            {
-                if(bed.OccupancyStatus)
-                {
-                    avaliableBeds.Add(bed);
-                }
-            }
-            return avaliableBeds;
+            BedAllotment bedAllotment = new BedAllotment();
+            return bedAllotment.GetAvailableBeds();
         }
 
-        [HttpGet("Beds/{BedId}")]
+        [HttpGet("Status/{BedId}")]
         public bool GetBedsOccupancyStatus(int bedId)
         {
             var bedStore = _context.Beds.ToList();
-            bool status = false;
-            foreach (Beds bed in bedStore)
-            {
-                if (bed.BedId == bedId)
-                {
-                    status = bed.OccupancyStatus;
-                }
-            }
+            var status = bedStore.Where(item => item.BedId == bedId).FirstOrDefault().OccupancyStatus;
             return status;
 
         }
 
+        [HttpPost("PatientInfo")]
+        public void AddPatientInfo([FromBody] Patients patient)
+        {
+            BedAllotment bedAllotment = new BedAllotment();
+            List<Beds> availableBeds = bedAllotment.GetAvailableBeds();
+            if (availableBeds.Count == 0)
+            {
+                //AlertMessage("No beds are available, cannot add more patients")
+            }
+            else
+            {
+                patient.BedId = availableBeds[0].BedId;
+                _context.Patients.Add(patient);
+                _context.SaveChanges();
+                bedAllotment.AllotBedToPatient(patient);
+            }
+        }
+
+        [HttpDelete("PatientInfo/{patientId}")]
+        public void DischargingPatient(int patientId)
+        {
+            BedAllotment bedAllotment = new BedAllotment();
+            var patientStore = _context.Patients.ToList();
+            foreach (Patients patient in patientStore)
+            {
+                if (patient.PatientId == patientId)
+                {
+                    bedAllotment.EmptyTheBed(patient);
+                    _context.Remove(patient);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        #endregion
+
+        #region ManipulationFunctions
+
+
         //Get All Patient Info
         [HttpGet("PatientInfo")]
-        public IEnumerable<Patients> Get()
+        public IEnumerable<Patients> GetAllPatientInfo()
         {
             var patientStore = _context.Patients.ToList();
             return patientStore;
@@ -52,7 +79,7 @@ namespace AlertToCareApi.Controllers
 
         //Particular Patient Info 
         [HttpGet("PatientInfo/{patientId}")]
-        public Patients Get(int patientId)
+        public Patients GetParticularPatientInfo(int patientId)
         {
             var patientStore = _context.Patients.ToList();
             foreach (Patients patient in patientStore)
@@ -65,18 +92,9 @@ namespace AlertToCareApi.Controllers
             return null;
         }
 
-        //Adding a Patient Info
-        [HttpPost("PatientInfo")]
-        public void Post([FromBody] Patients patient)
-        {
-            _context.Patients.Add(patient);
-            _context.SaveChanges();
-            AllotBedToPatient(patient);
-        }
-
         //Updating a Patient Info
         [HttpPut("PatientInfo/{patientId}")]
-        public void Put(int patientId, [FromBody] Patients updatedPatient)
+        public void UpdateParticularPatientInfo(int patientId, [FromBody] Patients updatedPatient)
         {
             var patientStore = _context.Patients.ToList();
             foreach (Patients patient in patientStore)
@@ -88,43 +106,7 @@ namespace AlertToCareApi.Controllers
                 }
             }
         }
-
-        //Delete a Patient Info
-        [HttpDelete("PatientInfo/{patientId}")]
-        public void DeleteLayout(int patientId)
-        {
-            var patientStore = _context.Patients.ToList();
-            foreach (Patients patient in patientStore)
-            {
-                if (patient.PatientId == patientId)
-                {
-                    _context.Remove(patient);
-                    _context.SaveChanges();
-                }
-            }
-        }
-
-        //Alloting Bed to Patient and then updating the bed occupancy status
-        public void AllotBedToPatient(Patients patient)
-        {
-            var bedStore = _context.Beds.ToList();
-            foreach(Beds bed in bedStore) 
-            {
-                if (patient.BedId == bed.BedId)
-                {
-                    UpdateBedOccupancyStatus(bed);
-                }
-            }
-            //AlertUtility.SendAlertMessage(message);
-            
-        }
-
-        public void UpdateBedOccupancyStatus(Beds bed)
-        {
-            bed.OccupancyStatus = true;
-            _context.Update(bed);
-            _context.SaveChanges();
-        }
+        #endregion
 
     }
 }
