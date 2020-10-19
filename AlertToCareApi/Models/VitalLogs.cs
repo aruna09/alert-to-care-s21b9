@@ -6,7 +6,7 @@ namespace AlertToCareApi.Models
     public class VitalsLogs
     {
         [Key]
-        public int VitalsInfoId { get; set; }
+        public int VitalsLogId { get; set; }
         [ForeignKey("PatientId")]
         public int PatientId { get; set; }
         public double BpmRate { get; set; }

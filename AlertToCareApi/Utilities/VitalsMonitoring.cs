@@ -1,4 +1,6 @@
 ﻿using AlertToCareApi.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,50 +13,90 @@ namespace AlertToCareApi.Utilities
         {
             return _context.VitalsLogs.ToList();
         }
-        public VitalsLogs GetVitalsForSpecificPatient(int id)
+        public List<string> GetVitalsForSpecificPatient(int id)
         {
             var vitalStore = _context.VitalsLogs.ToList();
-            var vitals = vitalStore.Where(item => item.PatientId == id).FirstOrDefault();
-            return vitals;
+            var vitals = vitalStore.Where(item => item.PatientId == id).ToList();
+            IEnumerable<VitalsLogs> patientVitals = vitals;
+            var flag = 0;
+            List<string> alarms = new List<string>();
+            foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
+            {
+                var pid = log.PatientId;
+                var patient = _context.Patients.Where(item => item.PatientId == pid).FirstOrDefault();
+                var pname = patient.PatientName;
+                var spo2 = CheckSpo2(log.Spo2Rate);
+                var bpm = CheckBpm(log.BpmRate);
+                var respRate = CheckRespRate(log.RespRate);
+                
+                if (spo2==0 && bpm==0 && respRate == 0)
+                {
+                    flag = 0;
+                }
+                else
+                {
+                    flag = 1;
+                    var tempMsg = "LogId : "+log.VitalsLogId+", "+"PatientId : "+pid+", "+"Name : "+pname+", "+"SPO2 : " + InterpretMessage(spo2) + ", " + "BPM : " + InterpretMessage(bpm) + ", " + "RespRate : " + InterpretMessage(respRate);
+                    alarms.Add(tempMsg); 
+                }
+
+            }
+            return alarms;
         }
 
         public string CheckVitals(VitalsLogs vital)
         {
-            var a = CheckSpo2(vital.Spo2Rate);
-            var b = CheckBpm(vital.BpmRate);
-            var c = CheckRespRate(vital.RespRate);
-            var s = a + "," + b + "," + c;
+            var pid = vital.PatientId;
+            var patient = _context.Patients.Where(item => item.PatientId == pid).FirstOrDefault();
+            var pname = patient.PatientName;
+            var spo2 = CheckSpo2(vital.Spo2Rate);
+            var bpm = CheckBpm(vital.BpmRate);
+            var respRate = CheckRespRate(vital.RespRate);
+            var a = "Spo2 Rate "+InterpretMessage(spo2);
+            var b = "Bpm Rate " + InterpretMessage(bpm);
+            var c = "Respiratory Rate " + InterpretMessage(respRate);
+            var s = ""+pid+","+pname+","+a + "," + b + "," + c;
             return s;
         }
-        private string CheckSpo2(double spo2)
+        private int CheckSpo2(double spo2)
         {
-            if (spo2 < 90)
+            if (spo2 < 95)
             {
-
-                return "Spo2 is low ";
-
+                return -1;
             }
             else
-                return "";
+                return 0;
 
         }
-        private string CheckBpm(double bpm)
+        private int CheckBpm(double bpm)
         {
             if (bpm < 70)
-                return "bpm is low ";
-            if (bpm > 150)
-                return "bpm is high ";
+                return -1;
+            if (bpm > 100)
+                return 1;
             else
-                return "";
+                return 0;
         }
-        private string CheckRespRate(double respRate)
+        private int CheckRespRate(double respRate)
         {
-            if (respRate < 30)
-                return "respRate is low ";
-            if (respRate > 95)
-                return "respRate is high ";
+            if (respRate < 12)
+                return -1;
+            if (respRate > 16)
+                return 1;
             else
-                return "";
+                return 0;
+        }
+
+        private string InterpretMessage(int msg)
+        {
+            if (msg == -1)
+                return "is low";
+            if (msg == 1)
+                return "is high";
+            if (msg == 0)
+                return "is good";
+            else
+                return "error deciphering the vital message";
         }
     }
 }

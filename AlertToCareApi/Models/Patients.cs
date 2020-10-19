@@ -12,5 +12,7 @@ namespace AlertToCareApi.Models
         public string ContactNo { get; set; }
         [ForeignKey("BedId")]
         public int BedId { get; set; }
+
+        public int MonitoringStatus { get; set; }
     }
 }
