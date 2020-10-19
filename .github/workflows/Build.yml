@@ -19,8 +19,8 @@ jobs:
       uses: actions/setup-dotnet@v1 
       with:
         dotnet-version: 3.1.301
-    - name: Install Sdk
-      run: dotnet add D:\a\alert-to-care-s21b9\alert-to-care-s21b9\AlertToCareUnitTest\AlertToCareUnitTest.csproj package Microsoft.NET.Test.Sdk --version 16.5.0 
+    -name: Install Dependencies
+	run: dotnet restore
      
     - name: Build with dotnet
       run: dotnet build --configuration Release
