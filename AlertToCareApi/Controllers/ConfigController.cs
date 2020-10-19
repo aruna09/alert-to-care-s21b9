@@ -1,8 +1,12 @@
-﻿using AlertToCareApi.Models;
+﻿using AlertToCareApi.EntriesValidator;
+using AlertToCareApi.Models;
 using AlertToCareApi.Utilities;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace AlertToCareApi.Controllers
 {
@@ -16,126 +20,143 @@ namespace AlertToCareApi.Controllers
 
         //Number of beds in each ICU
         [HttpGet("BedsInEachIcu")]
-        public IEnumerable<NumberOfBedsInIcu> GetNumberOfBedsInEachIcu()
-        { 
-            var icuStore = _context.Icu.ToList();
-            List<NumberOfBedsInIcu> numberOfBedsInIcu = new List<NumberOfBedsInIcu>();
-            BedIdentification bedIdentification = new BedIdentification();
-            foreach(Icu icu in icuStore)
+        public ActionResult<IEnumerable<NumberOfBedsInIcu>> GetNumberOfBedsInEachIcu()
+        {
+            try
             {
-                numberOfBedsInIcu.Add(new NumberOfBedsInIcu { IcuRoomNo = icu.IcuNo, CountOfBeds = bedIdentification.FindCountOfBeds(icu.IcuNo) });
+                var icuStore = _context.Icu.ToList();
+                List<NumberOfBedsInIcu> numberOfBedsInIcu = new List<NumberOfBedsInIcu>();
+                BedIdentification bedIdentification = new BedIdentification();
+                foreach (Icu icu in icuStore)
+                {
+                    numberOfBedsInIcu.Add(new NumberOfBedsInIcu { IcuRoomNo = icu.IcuNo, CountOfBeds = bedIdentification.FindCountOfBeds(icu.IcuNo) });
+                }
+                return Ok(numberOfBedsInIcu);
             }
-            return numberOfBedsInIcu;
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         //Bed Identification
         [HttpGet("Beds/{BedId}")]
-        public Beds GetParticularBedInfo(int bedId)
+        public ActionResult<Beds> GetParticularBedInfo(int bedId)
         {
-            var bedStore = _context.Beds.ToList();
-            var bed = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
-            return bed;
+            try
+            {
+                var bedStore = _context.Beds.ToList();
+                var bed = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
+                if (bed == null)
+                {
+                    return BadRequest("No Bed With The Given Bed Id Is Present");
+                }
+                return Ok(bed);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         //Layout Information
         [HttpGet("Layouts")]
-        public IEnumerable<Layouts> GetLayoutInfo()
+        public ActionResult<IEnumerable<Layouts>> GetLayoutInfo()
         {
-            LayoutInformation layoutInformation = new LayoutInformation();
-            var layoutStore = LayoutInformation.Layouts;
-            foreach(Layouts layout in layoutStore)
+            try
             {
-                layout.NoOfIcus = layoutInformation.FindNoOfIcus(layout.LayoutId);
-                layout.ListOfIcus = layoutInformation.FindListOfIcus(layout.LayoutId);
+                LayoutInformation layoutInformation = new LayoutInformation();
+                var layoutStore = LayoutInformation.Layouts;
+                foreach (Layouts layout in layoutStore)
+                {
+                    layout.NoOfIcus = layoutInformation.FindNoOfIcus(layout.LayoutId);
+                    layout.ListOfIcus = layoutInformation.FindListOfIcus(layout.LayoutId);
+                }
+                return Ok(layoutStore);
             }
-            return layoutStore;
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         #endregion
 
-        #region ManipulatingFunctions
+        #region Manipulation Functions
 
         [HttpGet("Beds")]
-        public IEnumerable<Beds> GetAllBedsInfo()
+        public ActionResult<IEnumerable<Beds>> GetAllBedsInfo()
         {
-            return _context.Beds.ToList();
+            try
+            {
+                return Ok(_context.Beds.ToList());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("Icu")]
-        public IEnumerable<Icu> GetAllIcuInfo()
+        public ActionResult<IEnumerable<Icu>> GetAllIcuInfo()
         {
-            return _context.Icu.ToList();
+            try
+            {
+                return Ok(_context.Icu.ToList());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost("Beds")]
-        public void AddNewBed([FromBody] Beds bed)
+        public IActionResult AddNewBed([FromBody] Beds bed)
         {
-            BedIdentification bedIdentification = new BedIdentification();
-            bed.BedSerialNo = bedIdentification.FindBedSerialNo(bed.IcuNo);
-            _context.Add(bed);
-            _context.SaveChanges();
+            try
+            {
+                BedIdentification bedIdentification = new BedIdentification();
+                if (!IcuValidator.CheckIfIcuIsPresent(bed.IcuNo))
+                {
+                    return BadRequest("The Inserted ICU No Is Not Available");
+                }
+                else
+                {
+                    bed.BedSerialNo = bedIdentification.FindBedSerialNo(bed.IcuNo);
+                    if (bed.BedSerialNo == 0)
+                    {
+                        return BadRequest("No More Beds Can be Added In This ICU Layout, ICU Is Full");
+                    }
+                    _context.Add(bed);
+                    _context.SaveChanges();
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
         }
 
         [HttpPost("Icu")]
-        public void AddNewIcu([FromBody] Icu icu)
+        public IActionResult AddNewIcu([FromBody] Icu icu)
         {
-            _context.Add(icu);
-            _context.SaveChanges();
-        }
-
-        [HttpPut("Beds/{BedId}")]
-        public void UpdateParticularBedInfo(int bedId, [FromBody] Beds updatedBed)
-        {
-            var bedStore = _context.Beds.ToList();
-            foreach (Beds bed in bedStore)
+            try
             {
-                if (bed.BedId == bedId)
+                if (!LayoutValidator.CheckIfLayoutIsPresent(icu.LayoutId))
                 {
-                    _context.Update(updatedBed);
+                    return BadRequest("The Inserted Layout Id For The ICU is Not Available");
+                }
+                else
+                {
+                    _context.Add(icu);
                     _context.SaveChanges();
+                    return Ok();
                 }
             }
-        }
-
-        [HttpPut("Icu/{IcuNo}")]
-        public void UpdateParticularIcuInfo(int icuNo, [FromBody] Icu updatedIcu)
-        {
-            var icuStore = _context.Icu.ToList();
-            foreach (Icu icu in icuStore)
+            catch (Exception)
             {
-                if (icu.IcuNo == icuNo)
-                {
-                    _context.Update(updatedIcu);
-                    _context.SaveChanges();
-                }
-            }
-        }
-
-        [HttpDelete("Beds/{BedId}")]
-        public void DeleteParticularBedInfo(int bedId)
-        {
-            var bedStore = _context.Beds.ToList();
-            foreach (Beds bed in bedStore)
-            {
-                if (bed.BedId == bedId)
-                {
-                    _context.Remove(bed);
-                    _context.SaveChanges();
-                }
-            }
-        }
-
-        [HttpDelete("Icu/{IcuNo}")]
-        public void DeleteParticularIcuInfo(int icuNo)
-        {
-            var icuStore = _context.Icu.ToList();
-            foreach (Icu icu in icuStore)
-            {
-                if (icu.IcuNo == icuNo)
-                {
-                    _context.Remove(icu);
-                    _context.SaveChanges();
-                }
+                return StatusCode(500);
             }
         }
         #endregion

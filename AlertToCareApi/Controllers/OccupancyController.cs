@@ -1,8 +1,11 @@
-﻿using AlertToCareApi.Models;
+﻿using AlertToCareApi.EntriesValidator;
+using AlertToCareApi.Models;
 using AlertToCareApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AlertToCareApi.Controllers
 {
@@ -15,95 +18,134 @@ namespace AlertToCareApi.Controllers
         #region MainFunctions
 
         [HttpGet("AvailableBeds")]
-        public IEnumerable<Beds> GetBedsAvaliability()
+        public ActionResult<IEnumerable<Beds>> GetBedsAvailability()
         {
-            BedAllotment bedAllotment = new BedAllotment();
-            return bedAllotment.GetAvailableBeds();
+            try
+            {
+                BedAllotment bedAllotment = new BedAllotment();
+                return Ok(bedAllotment.GetAvailableBeds());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("Status/{BedId}")]
-        public bool GetBedsOccupancyStatus(int bedId)
+        public IActionResult GetBedsOccupancyStatus(int bedId)
         {
-            var bedStore = _context.Beds.ToList();
-            var status = bedStore.Where(item => item.BedId == bedId).FirstOrDefault().OccupancyStatus;
-            return status;
-
+            try
+            {
+                var bedStore = _context.Beds.ToList();
+                var findBedWithId = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
+                if (findBedWithId == null)
+                {
+                    return BadRequest("No Bed With The Given Bed Id Exists");
+                }
+                else
+                {
+                    var status = findBedWithId.OccupancyStatus;
+                    return Ok(status);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost("PatientInfo")]
-        public void AddPatientInfo([FromBody] Patients patient)
+        public IActionResult AddPatientInfo([FromBody] Patients patient)
         {
-            BedAllotment bedAllotment = new BedAllotment();
-            List<Beds> availableBeds = bedAllotment.GetAvailableBeds();
-            if (availableBeds.Count == 0)
+            try
             {
-                //AlertMessage("No beds are available, cannot add more patients")
+                BedAllotment bedAllotment = new BedAllotment();
+                List<Beds> availableBeds = bedAllotment.GetAvailableBeds();
+                bool validInfo = false;
+                string message = "";
+                PatientInfoValidator.ValidateInfoAndCheckForAvailability(patient, availableBeds.Count, ref validInfo, ref message);
+                if (!validInfo)
+                {
+                    return BadRequest(message);
+                }
+                else
+                {
+                    patient.BedId = availableBeds[0].BedId;
+                    _context.Patients.Add(patient);
+                    _context.SaveChanges();
+                    bedAllotment.AllotBedToPatient(patient);
+                    return Ok();
+                }
             }
-            else
+            catch (Exception)
             {
-                patient.BedId = availableBeds[0].BedId;
-                _context.Patients.Add(patient);
-                _context.SaveChanges();
-                bedAllotment.AllotBedToPatient(patient);
+                return StatusCode(500);
             }
         }
 
         [HttpDelete("PatientInfo/{patientId}")]
-        public void DischargingPatient(int patientId)
+        public IActionResult DischargingPatient(int patientId)
         {
-            BedAllotment bedAllotment = new BedAllotment();
-            var patientStore = _context.Patients.ToList();
-            foreach (Patients patient in patientStore)
+            try
             {
-                if (patient.PatientId == patientId)
+                if (!PatientInfoValidator.CheckIfPatientIdIsValid(patientId))
                 {
+                    return BadRequest("No Patient With The Given Patient Id Exists");
+                }
+                else
+                {
+                    BedAllotment bedAllotment = new BedAllotment();
+                    var patientStore = _context.Patients.ToList();
+                    var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
                     bedAllotment.EmptyTheBed(patient);
                     _context.Remove(patient);
                     _context.SaveChanges();
+                    return Ok();
                 }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
         }
 
         #endregion
 
-        #region ManipulationFunctions
+        #region Manipulation Functions
 
 
         //Get All Patient Info
         [HttpGet("PatientInfo")]
-        public IEnumerable<Patients> GetAllPatientInfo()
+        public ActionResult<IEnumerable<Patients>> GetAllPatientInfo()
         {
-            var patientStore = _context.Patients.ToList();
-            return patientStore;
-        }
-
-        //Particular Patient Info 
-        [HttpGet("PatientInfo/{patientId}")]
-        public Patients GetParticularPatientInfo(int patientId)
-        {
-            var patientStore = _context.Patients.ToList();
-            foreach (Patients patient in patientStore)
+            try
             {
-                if (patient.PatientId == patientId)
-                {
-                    return patient;
-                }
+                var patientStore = _context.Patients.ToList();
+                return Ok(patientStore);
             }
-            return null;
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
-        //Updating a Patient Info
-        [HttpPut("PatientInfo/{patientId}")]
-        public void UpdateParticularPatientInfo(int patientId, [FromBody] Patients updatedPatient)
+        //Get Particular Patient Info 
+        [HttpGet("PatientInfo/{patientId}")]
+        public ActionResult<Patients> GetParticularPatientInfo(int patientId)
         {
-            var patientStore = _context.Patients.ToList();
-            foreach (Patients patient in patientStore)
+            try
             {
-                if (patient.PatientId == patientId)
+                var patientStore = _context.Patients.ToList();
+                var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
+                if (patient == null)
                 {
-                    _context.Update(updatedPatient);
-                    _context.SaveChanges();
+                    return BadRequest("No Patient With The Given Patient Id Exists");
                 }
+                return Ok(patient);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
         }
         #endregion

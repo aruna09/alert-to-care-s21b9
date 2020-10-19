@@ -1,6 +1,7 @@
 ﻿using AlertToCareApi.Models;
 using AlertToCareApi.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,41 +16,51 @@ namespace AlertToCareApi.Controllers
 
         //with regrad to vitals
         [HttpGet("HealthStatus")]
-        public IEnumerable<string> GetAlarmForAllPatients()
+        public ActionResult<IEnumerable<string>> GetAlarmForAllPatients()
         {
-            List<string> messages = new List<string>();
-            VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-            IEnumerable<VitalsLogs> patientVitals = vitalsMonitoring.GetAllVitals();
-            foreach(VitalsLogs vitals in patientVitals)
+            try
             {
-               messages.Add(vitalsMonitoring.CheckVitals(vitals));
+                List<string> messages = new List<string>();
+                VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
+                IEnumerable<VitalsLogs> patientVitals = vitalsMonitoring.GetAllVitals();
+                foreach (VitalsLogs vitals in patientVitals)
+                {
+                    messages.Add(vitalsMonitoring.CheckVitals(vitals));
+                }
+                return Ok(messages);
             }
-            return messages;
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("HealthStatus/{PatientId}")]
-        public IEnumerable<string> GetAlarmForParticularPatient(int patientId)
+        public ActionResult<IEnumerable<string>> GetAlarmForParticularPatient(int patientId)
         {
-            VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-            var patientStore = _context.Patients.Where(item => item.PatientId == patientId).FirstOrDefault();
-            var monStat = patientStore.MonitoringStatus;
-            if (monStat == 0)
+            try
             {
-                List<string> patientVitalsAlarms = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
-                return patientVitalsAlarms;
+                VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
+                var patientStore = _context.Patients.Where(item => item.PatientId == patientId).FirstOrDefault();
+                var monStat = patientStore.MonitoringStatus;
+                if (monStat == 0)
+                {
+                    List<string> patientVitalsAlarms = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
+                    return Ok(patientVitalsAlarms);
+                }
+                else
+                {
+                    List<string> msg = new List<string>();
+                    msg.Add("No Alarms : Patient's Monitoring Status is Off ");
+                    return Ok(msg);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                List<string> msg = new List<string>();
-                msg.Add("No Alarms : Patient's Monitoring Status is Off ");
-                return msg;
+                return StatusCode(500, ex);
             }
-            
+
         }
-
-        //TODO:one alarm function with regard to any error
-
-        //TODO:one utility function for manually closing the alarm
 
         [HttpGet("SetAlarmOn/{patientId}")]
         public int SetAlarmOn(int patientId)
@@ -67,7 +78,7 @@ namespace AlertToCareApi.Controllers
             }
             catch
             {
-                return 404;
+                return 500;
             }
         }
 

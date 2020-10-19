@@ -18,7 +18,6 @@ namespace AlertToCareApi.Utilities
             var vitalStore = _context.VitalsLogs.ToList();
             var vitals = vitalStore.Where(item => item.PatientId == id).ToList();
             IEnumerable<VitalsLogs> patientVitals = vitals;
-            var flag = 0;
             List<string> alarms = new List<string>();
             foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
             {
@@ -28,16 +27,10 @@ namespace AlertToCareApi.Utilities
                 var spo2 = CheckSpo2(log.Spo2Rate);
                 var bpm = CheckBpm(log.BpmRate);
                 var respRate = CheckRespRate(log.RespRate);
-                
-                if (spo2==0 && bpm==0 && respRate == 0)
+                if (spo2 != 0 || bpm != 0 || respRate != 0)
                 {
-                    flag = 0;
-                }
-                else
-                {
-                    flag = 1;
-                    var tempMsg = "LogId : "+log.VitalsLogId+", "+"PatientId : "+pid+", "+"Name : "+pname+", "+"SPO2 : " + InterpretMessage(spo2) + ", " + "BPM : " + InterpretMessage(bpm) + ", " + "RespRate : " + InterpretMessage(respRate);
-                    alarms.Add(tempMsg); 
+                    var tempMsg = "LogId : " + log.VitalsLogId + ", " + "PatientId : " + pid + ", " + "Name : " + pname + ", " + "SPO2 : " + InterpretMessage(spo2) + ", " + "BPM : " + InterpretMessage(bpm) + ", " + "RespRate : " + InterpretMessage(respRate);
+                    alarms.Add(tempMsg);
                 }
 
             }
@@ -52,10 +45,10 @@ namespace AlertToCareApi.Utilities
             var spo2 = CheckSpo2(vital.Spo2Rate);
             var bpm = CheckBpm(vital.BpmRate);
             var respRate = CheckRespRate(vital.RespRate);
-            var a = "Spo2 Rate "+InterpretMessage(spo2);
+            var a = "Spo2 Rate " + InterpretMessage(spo2);
             var b = "Bpm Rate " + InterpretMessage(bpm);
             var c = "Respiratory Rate " + InterpretMessage(respRate);
-            var s = ""+pid+","+pname+","+a + "," + b + "," + c;
+            var s = "" + pid + "," + pname + "," + a + "," + b + "," + c;
             return s;
         }
         private int CheckSpo2(double spo2)
@@ -93,10 +86,8 @@ namespace AlertToCareApi.Utilities
                 return "is low";
             if (msg == 1)
                 return "is high";
-            if (msg == 0)
-                return "is good";
             else
-                return "error deciphering the vital message";
+                return "is good";
         }
     }
 }
