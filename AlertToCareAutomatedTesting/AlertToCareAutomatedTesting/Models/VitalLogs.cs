@@ -6,7 +6,7 @@ namespace AlertToCareAutomatedTesting.Models
 {
     class VitalLogs
     {
-        public int VitalsInfoId { get; set; }
+        public int VitalsLogId { get; set; }
         public int PatientId { get; set; }
         public double BpmRate { get; set; }
         public double Spo2Rate { get; set; }

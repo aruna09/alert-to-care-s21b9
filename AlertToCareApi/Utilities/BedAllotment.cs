@@ -1,15 +1,13 @@
-﻿using System;
+﻿using AlertToCareApi.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AlertToCareApi.Models;
 
 namespace AlertToCareApi.Utilities
 {
     public class BedAllotment
     {
         readonly ConfigDbContext _context = new ConfigDbContext();
-        
+
         public List<Beds> GetAvailableBeds()
         {
             var bedStore = _context.Beds.ToList();

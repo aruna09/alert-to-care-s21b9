@@ -64,7 +64,7 @@ namespace AlertToCareAutomatedTesting
             var client = new RestClient(url);
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
-            Patients patientInfo = new Patients { PatientId = 1, PatientName = "Nikita Kumari", Age = 23, ContactNo = "9826376268" };
+            Patients patientInfo = new Patients { PatientId = 27, PatientName = "Nikita Kumari", Age = 23, ContactNo = "9826376268" };
             request.AddJsonBody(patientInfo);
             IRestResponse response = client.Execute(request);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -77,7 +77,7 @@ namespace AlertToCareAutomatedTesting
             var client = new RestClient(url);
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
-            Patients patientInfo = new Patients { PatientId=1, PatientName="Nikita Kumari", Age=23, ContactNo="9826376268"};
+            Patients patientInfo = new Patients { PatientId = 1, PatientName = "Nikita Kumari", Age = 23, ContactNo = "9826376268" };
             request.AddJsonBody(patientInfo);
             IRestResponse response = client.Execute(request);
             Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -109,7 +109,7 @@ namespace AlertToCareAutomatedTesting
         [TestMethod]
         public void TestDeletingPatientInfo()
         {
-            string url = baseUrl + "PatientInfo/1";
+            string url = baseUrl + "PatientInfo/27";
             var client = new RestClient(url);
             var request = new RestRequest(Method.DELETE);
             IRestResponse response = client.Execute(request);
@@ -126,7 +126,7 @@ namespace AlertToCareAutomatedTesting
         }
         #endregion
 
-        #region Test Manipulating Functions
+        #region Test Manipulation Functions
         [TestMethod]
         public void TestGetAllPatientInfoApi()
         {

@@ -94,21 +94,18 @@ namespace AlertToCareApi.Controllers
         {
             try
             {
-                if (!PatientInfoValidator.CheckIfPatientIdIsValid(patientId))
+                BedAllotment bedAllotment = new BedAllotment();
+                var patientStore = _context.Patients.ToList();
+                var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
+                if (patient == null)
                 {
                     return BadRequest("No Patient With The Given Patient Id Exists");
                 }
-                else
-                {
-                    BedAllotment bedAllotment = new BedAllotment();
-                    var patientStore = _context.Patients.ToList();
-                    var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
-                    bedAllotment.EmptyTheBed(patient);
-                    PatientInfoValidator.DeleteVitalLogsForDischargedPatient(patientId);
-                    _context.Remove(patient);
-                    _context.SaveChanges();
-                    return Ok();
-                }
+                bedAllotment.EmptyTheBed(patient);
+                PatientInfoValidator.DeleteVitalLogsForDischargedPatient(patientId);
+                _context.Remove(patient);
+                _context.SaveChanges();
+                return Ok();
             }
             catch (Exception)
             {

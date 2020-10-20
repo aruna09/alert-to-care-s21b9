@@ -78,7 +78,7 @@ namespace AlertToCareAutomatedTesting
         }
         #endregion
 
-        #region Test Manipulating Functions
+        #region Test Manipulation Functions
         [TestMethod]
         public void TestGetAllBedInfoApi()
         {

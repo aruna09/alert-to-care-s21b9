@@ -1,26 +1,11 @@
 ﻿using AlertToCareApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace AlertToCareApi.EntriesValidator
 {
     public class PatientInfoValidator
     {
-        public static bool CheckIfPatientIdIsValid(int patientId)
-        {
-            ConfigDbContext _context = new ConfigDbContext();
-            var patientStore = _context.Patients.ToList();
-            var findPatientWithId = patientStore.FirstOrDefault(item => item.PatientId == patientId);
-            if (findPatientWithId == null)
-            {
-                return false;
-            }
-            return true;
-        }
         private static bool ValidatePatientInfo(Patients patient)
         {
             if (CheckIfLengthIsValid(patient.ContactNo, 10) && CheckIfNameIsValid(patient.PatientName))
@@ -80,13 +65,13 @@ namespace AlertToCareApi.EntriesValidator
 
         public static void DeleteVitalLogsForDischargedPatient(int patientId)
         {
-            ConfigDbContext _context = new ConfigDbContext();
-            var vitalsStore = _context.VitalsLogs.ToList();
+            ConfigDbContext context = new ConfigDbContext();
+            var vitalsStore = context.VitalsLogs.ToList();
             var vitalsToRemove = vitalsStore.Where(item => item.PatientId == patientId).ToList();
             foreach (VitalsLogs vitals in vitalsToRemove)
             {
-                _context.Remove(vitals);
-                _context.SaveChanges();
+                context.Remove(vitals);
+                context.SaveChanges();
             }
         }
     }

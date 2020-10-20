@@ -1,7 +1,4 @@
-﻿using AlertToCareApi.Models;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace AlertToCareApi.Utilities
 {

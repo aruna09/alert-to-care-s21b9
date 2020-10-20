@@ -13,8 +13,7 @@ namespace AlertToCareApi.Controllers
     {
         readonly ConfigDbContext _context = new ConfigDbContext();
 
-
-        //with regrad to vitals
+        #region Main Functions
         [HttpGet("HealthStatus")]
         public ActionResult<IEnumerable<string>> GetAlarmForAllPatients()
         {
@@ -29,9 +28,9 @@ namespace AlertToCareApi.Controllers
                 }
                 return Ok(messages);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -41,7 +40,7 @@ namespace AlertToCareApi.Controllers
             try
             {
                 VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-                var patientStore = _context.Patients.Where(item => item.PatientId == patientId).FirstOrDefault();
+                var patientStore = _context.Patients.FirstOrDefault(item => item.PatientId == patientId);
                 var monStat = patientStore.MonitoringStatus;
                 if (monStat == 0)
                 {
@@ -50,56 +49,130 @@ namespace AlertToCareApi.Controllers
                 }
                 else
                 {
-                    List<string> msg = new List<string>();
-                    msg.Add("No Alarms : Patient's Monitoring Status is Off ");
-                    return Ok(msg);
+                    string message = "No Alarms : Patient's Monitoring Status is Off ";
+                    return BadRequest(message);
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, ex.Message);
             }
 
         }
 
         [HttpGet("SetAlarmOn/{patientId}")]
-        public int SetAlarmOn(int patientId)
+        public IActionResult SetAlarmOn(int patientId)
         {
             try
             {
-                var patientStore = _context.Patients.Where(item => item.PatientId == patientId);
-                foreach (Patients patient in patientStore)
+                var patientStore = _context.Patients.ToList();
+                var patientWithGivenPatientId = _context.Patients.FirstOrDefault(item => item.PatientId == patientId);
+                if (patientWithGivenPatientId == null)
                 {
-
-                    patient.MonitoringStatus = 0;
-                    _context.SaveChanges();
+                    return BadRequest("No Patient With The Given Patient Id Exists");
                 }
-                return 200;
+                else
+                {
+                    patientWithGivenPatientId.MonitoringStatus = 0;
+                    _context.SaveChanges();
+                    return Ok();
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return 500;
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpGet("SetAlarmOff/{patientId}")]
-        public int SetAlarmOff(int patientId)
+        public IActionResult SetAlarmOff(int patientId)
         {
             try
             {
-                var patientStore = _context.Patients.Where(item => item.PatientId == patientId);
-                foreach (Patients patient in patientStore)
+                var patientStore = _context.Patients.ToList();
+                var patientWithGivenPatientId = _context.Patients.FirstOrDefault(item => item.PatientId == patientId);
+                if (patientWithGivenPatientId == null)
+                {
+                    return BadRequest("No Patient With The Given Patient Id Exists");
+                }
+                else
                 {
 
-                    patient.MonitoringStatus = 1;
+                    patientWithGivenPatientId.MonitoringStatus = 1;
                     _context.SaveChanges();
+                    return Ok();
                 }
-                return 200;
             }
-            catch
+            catch (Exception ex)
             {
-                return 404;
+                return StatusCode(500, ex.Message);
             }
         }
+        #endregion
+
+        #region Manipulation Functions
+
+        [HttpGet("Vitals")]
+        public ActionResult<IEnumerable<VitalsLogs>> GetVitalsInfo()
+        {
+            try
+            {
+                return Ok(_context.VitalsLogs.ToList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("Vitals")]
+        public IActionResult AddVitalsInfo([FromBody] VitalsLogs vitals)
+        {
+            try
+            {
+                _context.VitalsLogs.Add(vitals);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("Vitals/{vitallogId}")]
+        public IActionResult UpdateVitalsInfo(int vitallogId, [FromBody] VitalsLogs updatedVitals)
+        {
+            try
+            {
+                var vitalStore = _context.VitalsLogs.ToList();
+                var vitalToBeUpdated = vitalStore.FirstOrDefault(item => item.VitalsLogId == vitallogId);
+                _context.Remove(vitalToBeUpdated);
+                _context.Add(updatedVitals);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpDelete("Vitals/{vitallogId}")]
+        public IActionResult DeleteVitalsInfo(int vitallogId)
+        {
+            try
+            {
+                var vitalStore = _context.VitalsLogs.ToList();
+                var vitalToBeDeleted = vitalStore.FirstOrDefault(item => item.VitalsLogId == vitallogId);
+                _context.Remove(vitalToBeDeleted);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        #endregion
     }
 }

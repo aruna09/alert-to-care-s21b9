@@ -1,12 +1,10 @@
 ﻿using AlertToCareApi.EntriesValidator;
 using AlertToCareApi.Models;
 using AlertToCareApi.Utilities;
-using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 namespace AlertToCareApi.Controllers
 {
@@ -46,7 +44,7 @@ namespace AlertToCareApi.Controllers
             try
             {
                 var bedStore = _context.Beds.ToList();
-                var bed = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
+                var bed = bedStore.FirstOrDefault(item => item.BedId == bedId);
                 if (bed == null)
                 {
                     return BadRequest("No Bed With The Given Bed Id Is Present");
@@ -115,18 +113,17 @@ namespace AlertToCareApi.Controllers
         {
             try
             {
-                BedIdentification bedIdentification = new BedIdentification();
-                if (!IcuValidator.CheckIfIcuIsPresent(bed.IcuNo))
+                bool validIcu = false;
+                string message = "";
+                IcuValidator.CheckForValidIcu(bed.IcuNo, ref validIcu, ref message);
+                if (!validIcu)
                 {
-                    return BadRequest("The Inserted ICU No Is Not Available");
+                    return BadRequest(message);
                 }
                 else
                 {
+                    BedIdentification bedIdentification = new BedIdentification();
                     bed.BedSerialNo = bedIdentification.FindBedSerialNo(bed.IcuNo);
-                    if (bed.BedSerialNo == 0)
-                    {
-                        return BadRequest("No More Beds Can be Added In This ICU Layout, ICU Is Full");
-                    }
                     _context.Add(bed);
                     _context.SaveChanges();
                     return Ok();
