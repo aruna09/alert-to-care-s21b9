@@ -18,7 +18,7 @@ namespace AlertToCareApi.Utilities
         public int FindNoOfIcus(int layoutId)
         {
             var icuStore = _context.Icu.ToList();
-            var icuInEachlayout = icuStore.Where(item => item.LayoutId == layoutId).Count();
+            var icuInEachlayout = icuStore.Count(item => item.LayoutId == layoutId);
             return icuInEachlayout;
         }
 

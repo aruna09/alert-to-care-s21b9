@@ -66,7 +66,7 @@ namespace AlertToCareApi.Controllers
             try
             {
                 var patientStore = _context.Patients.ToList();
-                var patientWithGivenPatientId = _context.Patients.FirstOrDefault(item => item.PatientId == patientId);
+                var patientWithGivenPatientId = patientStore.FirstOrDefault(item => item.PatientId == patientId);
                 if (patientWithGivenPatientId == null)
                 {
                     return BadRequest("No Patient With The Given Patient Id Exists");
@@ -90,7 +90,7 @@ namespace AlertToCareApi.Controllers
             try
             {
                 var patientStore = _context.Patients.ToList();
-                var patientWithGivenPatientId = _context.Patients.FirstOrDefault(item => item.PatientId == patientId);
+                var patientWithGivenPatientId = patientStore.FirstOrDefault(item => item.PatientId == patientId);
                 if (patientWithGivenPatientId == null)
                 {
                     return BadRequest("No Patient With The Given Patient Id Exists");
@@ -147,6 +147,10 @@ namespace AlertToCareApi.Controllers
             {
                 var vitalStore = _context.VitalsLogs.ToList();
                 var vitalToBeUpdated = vitalStore.FirstOrDefault(item => item.VitalsLogId == vitallogId);
+                if(vitalToBeUpdated == null)
+                {
+                    return BadRequest("No Vital With The Given Vital ID Exists");
+                }
                 _context.Remove(vitalToBeUpdated);
                 _context.Add(updatedVitals);
                 _context.SaveChanges();
@@ -164,6 +168,10 @@ namespace AlertToCareApi.Controllers
             {
                 var vitalStore = _context.VitalsLogs.ToList();
                 var vitalToBeDeleted = vitalStore.FirstOrDefault(item => item.VitalsLogId == vitallogId);
+                if (vitalToBeDeleted == null)
+                {
+                    return BadRequest("No Vital With The Given Vital ID Exists");
+                }
                 _context.Remove(vitalToBeDeleted);
                 _context.SaveChanges();
                 return Ok();

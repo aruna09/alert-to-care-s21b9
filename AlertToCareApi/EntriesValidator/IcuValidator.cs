@@ -19,8 +19,8 @@ namespace AlertToCareApi.EntriesValidator
         private static bool CheckIfIcuIsFull(int icuNo)
         {
             BedIdentification bedIdentification = new BedIdentification();
-            var BedSerialNo = bedIdentification.FindBedSerialNo(icuNo);
-            if (BedSerialNo == 0)
+            var bedSerialNo = bedIdentification.FindBedSerialNo(icuNo);
+            if (bedSerialNo == 0)
             {
                 return true;
             }

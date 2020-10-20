@@ -17,13 +17,13 @@ namespace AlertToCareApi.Utilities
         public void AllotBedToPatient(Patients patient)
         {
             var bedStore = _context.Beds.ToList();
-            var bedToBeAlloted = bedStore.Where(item => item.BedId == patient.BedId).FirstOrDefault();
+            var bedToBeAlloted = bedStore.FirstOrDefault(item => item.BedId == patient.BedId);
             UpdateBedOccupancyStatus(bedToBeAlloted, true);
         }
         public void EmptyTheBed(Patients patient)
         {
             var bedStore = _context.Beds.ToList();
-            var bedToBeEmptied = bedStore.Where(item => item.BedId == patient.BedId).FirstOrDefault();
+            var bedToBeEmptied = bedStore.FirstOrDefault(item => item.BedId == patient.BedId);
             UpdateBedOccupancyStatus(bedToBeEmptied, false);
         }
         public void UpdateBedOccupancyStatus(Beds bed, bool bedStatus)

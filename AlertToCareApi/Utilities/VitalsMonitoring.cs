@@ -16,12 +16,11 @@ namespace AlertToCareApi.Utilities
         {
             var vitalStore = _context.VitalsLogs.ToList();
             var vitals = vitalStore.Where(item => item.PatientId == id).ToList();
-            IEnumerable<VitalsLogs> patientVitals = vitals;
             List<string> alarms = new List<string>();
             foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
             {
                 var pid = log.PatientId;
-                var patient = _context.Patients.Where(item => item.PatientId == pid).FirstOrDefault();
+                var patient = _context.Patients.FirstOrDefault(item => item.PatientId == pid);
                 var pname = patient.PatientName;
                 var spo2 = CheckSpo2(log.Spo2Rate);
                 var bpm = CheckBpm(log.BpmRate);
@@ -39,7 +38,7 @@ namespace AlertToCareApi.Utilities
         public string CheckVitals(VitalsLogs vital)
         {
             var pid = vital.PatientId;
-            var patient = _context.Patients.Where(item => item.PatientId == pid).FirstOrDefault();
+            var patient = _context.Patients.FirstOrDefault(item => item.PatientId == pid);
             var pname = patient.PatientName;
             var spo2 = CheckSpo2(vital.Spo2Rate);
             var bpm = CheckBpm(vital.BpmRate);

@@ -36,7 +36,7 @@ namespace AlertToCareApi.Controllers
             try
             {
                 var bedStore = _context.Beds.ToList();
-                var findBedWithId = bedStore.Where(item => item.BedId == bedId).FirstOrDefault();
+                var findBedWithId = bedStore.FirstOrDefault(item => item.BedId == bedId);
                 if (findBedWithId == null)
                 {
                     return BadRequest("No Bed With The Given Bed Id Exists");
