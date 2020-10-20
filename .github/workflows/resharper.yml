@@ -17,8 +17,11 @@ jobs:
       - name: Install resharper
         run: dotnet tool install -g JetBrains.ReSharper.GlobalTools
       
-      - name: Add Package
-        run: dotnet add AlertToCareUnitTest/AlertToCareUnitTest.csproj package xunit --version 2.4.0 
+      - name: Add xunit Package
+        run: dotnet add AlertToCareUnitTest/AlertToCareUnitTest.csproj package xunit --version 2.4.0
+      
+      - name: Add Entity Framework Package
+        run: dotnet add AlertToCareApi/AlertToCareApi.csproj package Microsoft.EntityFrameworkCore --version 3.1.9
         
       - name: Run resharper inspection
         run: jb inspectcode AlertToCareApi.sln /output=insreport.xml
