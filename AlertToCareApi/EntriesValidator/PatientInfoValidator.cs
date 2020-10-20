@@ -8,7 +8,7 @@ namespace AlertToCareApi.EntriesValidator
     {
         private static bool ValidatePatientInfo(Patients patient)
         {
-            if (CheckIfLengthIsValid(patient.ContactNo, 10) && CheckIfNameIsValid(patient.PatientName) && patient.Age!=0)
+            if (CheckIfLengthIsValid(patient.ContactNo, 10) && CheckIfNameIsValid(patient.PatientName))
             {
                 return true;
             }
