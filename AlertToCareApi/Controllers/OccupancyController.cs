@@ -96,14 +96,14 @@ namespace AlertToCareApi.Controllers
             {
                 BedAllotment bedAllotment = new BedAllotment();
                 var patientStore = _context.Patients.ToList();
-                var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
-                if (patient == null)
+                var patientToBeDischarged = patientStore.FirstOrDefault(item => item.PatientId == patientId);
+                if (patientToBeDischarged == null)
                 {
                     return BadRequest("No Patient With The Given Patient Id Exists");
                 }
-                bedAllotment.EmptyTheBed(patient);
+                bedAllotment.EmptyTheBed(patientToBeDischarged);
                 PatientInfoValidator.DeleteVitalLogsForDischargedPatient(patientId);
-                _context.Remove(patient);
+                _context.Remove(patientToBeDischarged);
                 _context.SaveChanges();
                 return Ok();
             }
