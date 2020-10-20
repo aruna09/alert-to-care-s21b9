@@ -26,7 +26,7 @@ namespace AlertToCareApi.Utilities
             var bedToBeEmptied = bedStore.FirstOrDefault(item => item.BedId == patient.BedId);
             UpdateBedOccupancyStatus(bedToBeEmptied, false);
         }
-        public void UpdateBedOccupancyStatus(Beds bed, bool bedStatus)
+        private void UpdateBedOccupancyStatus(Beds bed, bool bedStatus)
         {
             bed.OccupancyStatus = bedStatus;
             _context.Update(bed);
