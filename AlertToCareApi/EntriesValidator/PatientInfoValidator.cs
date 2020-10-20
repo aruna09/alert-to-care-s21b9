@@ -77,5 +77,17 @@ namespace AlertToCareApi.EntriesValidator
             return true;
 
         }
+
+        public static void DeleteVitalLogsForDischargedPatient(int patientId)
+        {
+            ConfigDbContext _context = new ConfigDbContext();
+            var vitalsStore = _context.VitalsLogs.ToList();
+            var vitalsToRemove = vitalsStore.Where(item => item.PatientId == patientId).ToList();
+            foreach (VitalsLogs vitals in vitalsToRemove)
+            {
+                _context.Remove(vitals);
+                _context.SaveChanges();
+            }
+        }
     }
 }

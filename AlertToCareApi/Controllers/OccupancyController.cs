@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AlertToCareApi.Controllers
 {
@@ -83,6 +82,13 @@ namespace AlertToCareApi.Controllers
             }
         }
 
+        [HttpPost("PatientVitals")]
+        public void AddVitalsForPatient(VitalsLogs vitals)
+        {
+            _context.VitalsLogs.Add(vitals);
+            _context.SaveChanges();
+        }
+
         [HttpDelete("PatientInfo/{patientId}")]
         public IActionResult DischargingPatient(int patientId)
         {
@@ -98,6 +104,7 @@ namespace AlertToCareApi.Controllers
                     var patientStore = _context.Patients.ToList();
                     var patient = patientStore.FirstOrDefault(item => item.PatientId == patientId);
                     bedAllotment.EmptyTheBed(patient);
+                    PatientInfoValidator.DeleteVitalLogsForDischargedPatient(patientId);
                     _context.Remove(patient);
                     _context.SaveChanges();
                     return Ok();

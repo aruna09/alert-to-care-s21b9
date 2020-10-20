@@ -56,6 +56,20 @@ namespace AlertToCareAutomatedTesting
             IRestResponse response = client.Execute(request);
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
+
+        [TestMethod]
+        public void TestAddPatientInfoApi()
+        {
+            string url = baseUrl + "PatientInfo";
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            Patients patientInfo = new Patients { PatientId = 1, PatientName = "Nikita Kumari", Age = 23, ContactNo = "9826376268" };
+            request.AddJsonBody(patientInfo);
+            IRestResponse response = client.Execute(request);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
+
         [TestMethod]
         public void TestAddPatientInfoApiWithExistingPatientId()
         {
