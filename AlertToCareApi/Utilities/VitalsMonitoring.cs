@@ -12,27 +12,42 @@ namespace AlertToCareApi.Utilities
         {
             return _context.VitalsLogs.ToList();
         }
-        public List<string> GetVitalsForSpecificPatient(int id)
+        public Alarm GetVitalsForSpecificPatient(int id)
         {
             var vitalStore = _context.VitalsLogs.ToList();
             var vitals = vitalStore.Where(item => item.PatientId == id).ToList();
-            List<string> alarms = new List<string>();
+            Alarm alarms = new Alarm();
             foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
             {
                 var pid = log.PatientId;
+                alarms.ID = pid;
                 var patient = _context.Patients.FirstOrDefault(item => item.PatientId == pid);
-                var pname = patient.PatientName;
-                var spo2 = CheckSpo2(log.Spo2Rate);
-                var bpm = CheckBpm(log.BpmRate);
-                var respRate = CheckRespRate(log.RespRate);
-                if (spo2 != 0 || bpm != 0 || respRate != 0)
+                alarms.Name = patient.PatientName;
+                int[] arr = new int[3];
+                arr[0] = CheckSpo2(log.Spo2Rate);
+                arr[1] = CheckBpm(log.BpmRate);
+                arr[2] = CheckRespRate(log.RespRate);
+                int count = CountZeroes(arr);
+                if (count!=3)
                 {
-                    var tempMsg = "LogId : " + log.VitalsLogId + ", " + "PatientId : " + pid + ", " + "Name : " + pname + ", " + "SPO2 : " + InterpretMessage(spo2) + ", " + "BPM : " + InterpretMessage(bpm) + ", " + "RespRate : " + InterpretMessage(respRate);
-                    alarms.Add(tempMsg);
+                    var tempMsg = "LogId : " + log.VitalsLogId + ", "  + "SPO2 : " + InterpretMessage(arr[0]) + ", " + "BPM : " + InterpretMessage(arr[1]) + ", " + "RespRate : " + InterpretMessage(arr[2]);
+                    alarms.Messages.Add(tempMsg);
                 }
 
             }
             return alarms;
+        }
+
+        private int CountZeroes(int [] arr)
+        {
+            int ctr = 0;
+            foreach (int i in arr)
+            {
+                if (i == 0)
+                    ctr++;
+            }
+
+            return ctr;
         }
 
         public string CheckVitals(VitalsLogs vital)

@@ -44,7 +44,7 @@ namespace AlertToCareApi.Controllers
                 var monStat = patientStore.MonitoringStatus;
                 if (monStat == 0)
                 {
-                    List<string> patientVitalsAlarms = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
+                    Alarm patientVitalsAlarms = vitalsMonitoring.GetVitalsForSpecificPatient(patientId);
                     return Ok(patientVitalsAlarms);
                 }
                 else

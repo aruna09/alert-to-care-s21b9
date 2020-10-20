@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\AlertToCareApi",
+    "\\AlertToCareApi\\Utilities",
+    "\\AlertToCareUnitTest",
+    "\\AlertToCareUnitTest\\bin",
+    "\\AlertToCareUnitTest\\bin\\Debug",
+    "\\AlertToCareUnitTest\\bin\\Release",
+    "\\AlertToCareUnitTest\\obj"
+  ],
+  "SelectedNode": "\\AlertToCareUnitTest\\VitalsMonitoringUnitTest.cs",
+  "PreviewInSolutionExplorer": false
+}
