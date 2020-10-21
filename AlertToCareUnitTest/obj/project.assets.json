@@ -1840,7 +1840,7 @@
       ]
     },
     "Microsoft.NETCore.Platforms/1.0.1": {
-      "sha512": "2G6OjjJzwBfNOO8myRV/nFrbTw5iA+DEm0N+qUqhrOmaVtn4pC77h38I1jsXGw5VH55+dPfQsqHD0We9sCl9FQ==",
+      "sha512": "oq9B289GvIVAo9xfJFNBuuLiE55OopBcS3oZlSYyispEcCigEcs6X6CJM4lfQVXegTkx+o2Z6Xx9EYcpHPKGfA==",
       "type": "package",
       "path": "microsoft.netcore.platforms/1.0.1",
       "files": [
@@ -4521,23 +4521,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\320087363\\.nuget\\packages\\": {},
+    "C:\\Users\\320087992\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\320087363\\alert-to-care-s21b9\\AlertToCareUnitTest\\AlertToCareUnitTest.csproj",
+      "projectUniqueName": "C:\\Users\\320087992\\Documents\\Bootcamp\\case-study-II\\alert-to-care-s21b9\\AlertToCareUnitTest\\AlertToCareUnitTest.csproj",
       "projectName": "AlertToCareUnitTest",
-      "projectPath": "C:\\Users\\320087363\\alert-to-care-s21b9\\AlertToCareUnitTest\\AlertToCareUnitTest.csproj",
-      "packagesPath": "C:\\Users\\320087363\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\320087363\\alert-to-care-s21b9\\AlertToCareUnitTest\\obj\\",
+      "projectPath": "C:\\Users\\320087992\\Documents\\Bootcamp\\case-study-II\\alert-to-care-s21b9\\AlertToCareUnitTest\\AlertToCareUnitTest.csproj",
+      "packagesPath": "C:\\Users\\320087992\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\320087992\\Documents\\Bootcamp\\case-study-II\\alert-to-care-s21b9\\AlertToCareUnitTest\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\320087363\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\320087992\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4550,8 +4550,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\320087363\\alert-to-care-s21b9\\AlertToCareApi\\AlertToCareApi.csproj": {
-              "projectPath": "C:\\Users\\320087363\\alert-to-care-s21b9\\AlertToCareApi\\AlertToCareApi.csproj"
+            "C:\\Users\\320087992\\Documents\\Bootcamp\\case-study-II\\alert-to-care-s21b9\\AlertToCareApi\\AlertToCareApi.csproj": {
+              "projectPath": "C:\\Users\\320087992\\Documents\\Bootcamp\\case-study-II\\alert-to-care-s21b9\\AlertToCareApi\\AlertToCareApi.csproj"
             }
           }
         }
@@ -4600,7 +4600,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
