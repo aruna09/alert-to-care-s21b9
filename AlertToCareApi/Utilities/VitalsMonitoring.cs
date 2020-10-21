@@ -17,6 +17,7 @@ namespace AlertToCareApi.Utilities
             var vitalStore = _context.VitalsLogs.ToList();
             var vitals = vitalStore.Where(item => item.PatientId == id).ToList();
             Alarm alarms = new Alarm();
+            alarms.Messages = new List<string>();
             foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
             {
                 var pid = log.PatientId;

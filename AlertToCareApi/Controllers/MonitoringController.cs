@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AlertToCareApi.Controllers
 {
@@ -19,14 +20,15 @@ namespace AlertToCareApi.Controllers
         {
             try
             {
-                List<string> messages = new List<string>();
                 VitalsMonitoring vitalsMonitoring = new VitalsMonitoring();
-                IEnumerable<VitalsLogs> patientVitals = vitalsMonitoring.GetAllVitals();
-                foreach (VitalsLogs vitals in patientVitals)
+                var patientStore = _context.Patients.ToList();
+                List<Alarm> patientAlarms = new List<Alarm>();
+                foreach(Patients patient in patientStore)
                 {
-                    messages.Add(vitalsMonitoring.CheckVitals(vitals));
+                    Alarm patientVitalsAlarms = vitalsMonitoring.GetVitalsForSpecificPatient(patient.PatientId);
+                    patientAlarms.Add(patientVitalsAlarms);
                 }
-                return Ok(messages);
+                return Ok(patientAlarms);
             }
             catch (Exception ex)
             {

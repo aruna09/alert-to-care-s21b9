@@ -13,12 +13,14 @@ namespace AlertToCareUnitTest
             //var _context = new AlertToCareApi.ConfigDbContext();
             //VitalsLogs Log = _context.VitalsLogs.ToList().FirstOrDefault();
 
-            VitalsLogs log = new VitalsLogs();
-            log.VitalsLogId = 1;
-            log.PatientId = 22;
-            log.Spo2Rate = 95;
-            log.RespRate = 7;
-            log.BpmRate = 78;
+            VitalsLogs log = new VitalsLogs
+            {
+                VitalsLogId = 1,
+                PatientId = 22,
+                Spo2Rate = 95,
+                RespRate = 7,
+                BpmRate = 78,
+            };
 
             string ans = apiClassVitalsMonitoring.CheckVitals(log);
             string[] arr = ans.Split(",").ToArray();
@@ -32,12 +34,14 @@ namespace AlertToCareUnitTest
         public void WhenCheckVitalsIsGivenLogThatDoesNotExistInDatabaseItReturnsAnError()
         {
             var apiClassVitalsMonitoring = new AlertToCareApi.Utilities.VitalsMonitoring();
-            VitalsLogs log = new VitalsLogs();
-            log.VitalsLogId = 1;
-            log.PatientId = 90;
-            log.Spo2Rate = 95;
-            log.RespRate = 7;
-            log.BpmRate = 78;
+            VitalsLogs log = new VitalsLogs
+            {
+                VitalsLogId = 1,
+                PatientId = 90,
+                Spo2Rate = 95,
+                RespRate = 7,
+                BpmRate = 78,
+            };
 
             string ans = apiClassVitalsMonitoring.CheckVitals(log);
             string[] arr = ans.Split(',');
