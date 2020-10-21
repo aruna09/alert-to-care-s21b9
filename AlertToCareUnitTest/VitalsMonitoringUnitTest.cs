@@ -1,5 +1,4 @@
 using AlertToCareApi.Models;
-using System;
 using System.Linq;
 using Xunit;
 
@@ -10,18 +9,18 @@ namespace AlertToCareUnitTest
         [Fact]
         public void WhenCheckVitalsIsGivenCorrectLogItReturnsAString()
         {
-            var ApiClassVitalsMonitoring = new AlertToCareApi.Utilities.VitalsMonitoring();
+            var apiClassVitalsMonitoring = new AlertToCareApi.Utilities.VitalsMonitoring();
             //var _context = new AlertToCareApi.ConfigDbContext();
             //VitalsLogs Log = _context.VitalsLogs.ToList().FirstOrDefault();
 
-            var Log = new VitalsLogs();
-            Log.VitalsLogId = 1;
-            Log.PatientId = 22;
-            Log.Spo2Rate = 95;
-            Log.RespRate = 7;
-            Log.BpmRate = 78;
+            VitalsLogs log = new VitalsLogs();
+            log.VitalsLogId = 1;
+            log.PatientId = 22;
+            log.Spo2Rate = 95;
+            log.RespRate = 7;
+            log.BpmRate = 78;
 
-            string ans = ApiClassVitalsMonitoring.CheckVitals(Log);
+            string ans = apiClassVitalsMonitoring.CheckVitals(log);
             string[] arr = ans.Split(",").ToArray();
 
             Assert.True(ans.Length > 1);
@@ -32,19 +31,20 @@ namespace AlertToCareUnitTest
         [Fact]
         public void WhenCheckVitalsIsGivenLogThatDoesNotExistInDatabaseItReturnsAnError()
         {
-            var ApiClassVitalsMonitoring = new AlertToCareApi.Utilities.VitalsMonitoring();
-            var Log = new VitalsLogs();
-            Log.VitalsLogId = 1;
-            Log.PatientId = 90;
-            Log.Spo2Rate = 95;
-            Log.RespRate = 7;
-            Log.BpmRate = 78;
+            var apiClassVitalsMonitoring = new AlertToCareApi.Utilities.VitalsMonitoring();
+            VitalsLogs log = new VitalsLogs();
+            log.VitalsLogId = 1;
+            log.PatientId = 90;
+            log.Spo2Rate = 95;
+            log.RespRate = 7;
+            log.BpmRate = 78;
 
-            string ans = ApiClassVitalsMonitoring.CheckVitals(Log);
+            string ans = apiClassVitalsMonitoring.CheckVitals(log);
             string[] arr = ans.Split(',');
 
             Assert.True(ans.Length > 1);
-            Assert.True(ans.Contains("Error") == true);
+            bool result = ans.Contains("Error");
+            Assert.True(result);
 
             Assert.False(arr.Length == 5);
 

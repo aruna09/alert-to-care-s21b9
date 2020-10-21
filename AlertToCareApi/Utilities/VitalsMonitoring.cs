@@ -20,9 +20,9 @@ namespace AlertToCareApi.Utilities
             foreach (VitalsLogs log in vitals.Skip(Math.Max(0, vitals.Count - 10)))
             {
                 var pid = log.PatientId;
-                alarms.ID = pid;
+                alarms.Id = pid;
                 var patient = _context.Patients.FirstOrDefault(item => item.PatientId == pid);
-                alarms.Name = patient.PatientName;
+                alarms.Name = patient?.PatientName;
                 int[] arr = new int[3];
                 arr[0] = CheckSpo2(log.Spo2Rate);
                 arr[1] = CheckBpm(log.BpmRate);
@@ -54,7 +54,7 @@ namespace AlertToCareApi.Utilities
         {
             var pid = vital.PatientId;
             var patient = _context.Patients.FirstOrDefault(item => item.PatientId == pid);
-            var pname = patient.PatientName;
+            var pname = patient?.PatientName;
             var spo2 = CheckSpo2(vital.Spo2Rate);
             var bpm = CheckBpm(vital.BpmRate);
             var respRate = CheckRespRate(vital.RespRate);
